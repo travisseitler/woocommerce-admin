@@ -12,14 +12,14 @@ module.exports = function( api ) {
 					pragma: 'createElement',
 				},
 			],
-			[
-				'@wordpress/babel-plugin-import-jsx-pragma',
-				{
-					scopeVariable: 'createElement',
-					source: '@wordpress/element',
-					isDefault: false,
-				},
-			],
+			// [
+			// 	'@wordpress/babel-plugin-import-jsx-pragma',
+			// 	{
+			// 		scopeVariable: 'createElement',
+			// 		source: '@wordpress/element',
+			// 		isDefault: false,
+			// 	},
+			// ],
 		],
 		env: {
 			production: {
