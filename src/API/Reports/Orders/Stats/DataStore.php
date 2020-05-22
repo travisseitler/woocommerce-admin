@@ -98,8 +98,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'net_revenue'             => "SUM({$table_name}.net_total) AS net_revenue",
 			'avg_items_per_order'     => "SUM( {$table_name}.num_items_sold ) / SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) AS avg_items_per_order",
 			'avg_order_value'         => "SUM( {$table_name}.net_total ) / SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) AS avg_order_value",
-			// Count returning customers as ( total_customers - new_customers ) to get an accurate number and count customers in with both new and old statuses as new.
-			'num_returning_customers' => "( COUNT( DISTINCT( {$table_name}.customer_id ) ) -  COUNT( DISTINCT( CASE WHEN {$table_name}.returning_customer = 0 THEN {$table_name}.customer_id END ) ) ) AS num_returning_customers",
+			'num_returning_customers' => "COUNT( DISTINCT( CASE WHEN {$table_name}.returning_customer = 1 THEN {$table_name}.customer_id END ) ) AS num_returning_customers",
 			'num_new_customers'       => "COUNT( DISTINCT( CASE WHEN {$table_name}.returning_customer = 0 THEN {$table_name}.customer_id END ) ) AS num_new_customers",
 		);
 	}
