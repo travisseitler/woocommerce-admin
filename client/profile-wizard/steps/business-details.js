@@ -13,7 +13,11 @@ import { keys, get, pickBy } from 'lodash';
  */
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { ONBOARDING_STORE_NAME, pluginNames, SETTINGS_STORE_NAME } from '@woocommerce/data';
+import {
+	ONBOARDING_STORE_NAME,
+	pluginNames,
+	SETTINGS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -93,12 +97,12 @@ class BusinessDetails extends Component {
 			selling_venues: sellingVenues,
 		} = values;
 		const businessExtensions = this.getBusinessExtensions( values );
-		const { getCurrency } = this.context;
+		const { getCurrencyConfig } = this.context;
 
 		recordEvent( 'storeprofiler_store_business_details_continue', {
 			product_number: productCount,
 			already_selling: sellingVenues,
-			currency: getCurrency().code,
+			currency: getCurrencyConfig().code,
 			revenue,
 			used_platform: otherPlatform,
 			used_platform_name: otherPlatformName,
@@ -246,8 +250,8 @@ class BusinessDetails extends Component {
 	}
 
 	numberFormat( value ) {
-		const { getCurrency } = this.context;
-		return formatValue( getCurrency(), 'number', value );
+		const { getCurrencyConfig } = this.context;
+		return formatValue( getCurrencyConfig(), 'number', value );
 	}
 
 	getNumberRangeString( min, max = false, format = this.numberFormat ) {
@@ -409,7 +413,7 @@ class BusinessDetails extends Component {
 
 	render() {
 		const { isInstallingExtensions, extensionInstallError } = this.state;
-		const { formatCurrency } = this.context;
+		const { formatAmount } = this.context;
 		const productCountOptions = [
 			{
 				key: '0',
@@ -442,7 +446,7 @@ class BusinessDetails extends Component {
 				label: sprintf(
 					/* translators: %s: $0 revenue amount */
 					__( "%s (I'm just getting started)", 'woocommerce-admin' ),
-					formatCurrency( 0 )
+					formatAmount( 0 )
 				),
 			},
 			{
@@ -450,7 +454,7 @@ class BusinessDetails extends Component {
 				label: sprintf(
 					/* translators: %s: A given revenue amount, e.g., $2500 */
 					__( 'Up to %s', 'woocommerce-admin' ),
-					formatCurrency( this.convertCurrency( 2500 ) )
+					formatAmount( this.convertCurrency( 2500 ) )
 				),
 			},
 			{
@@ -458,7 +462,7 @@ class BusinessDetails extends Component {
 				label: this.getNumberRangeString(
 					this.convertCurrency( 2500 ),
 					this.convertCurrency( 10000 ),
-					formatCurrency
+					formatAmount
 				),
 			},
 			{
@@ -466,7 +470,7 @@ class BusinessDetails extends Component {
 				label: this.getNumberRangeString(
 					this.convertCurrency( 10000 ),
 					this.convertCurrency( 50000 ),
-					formatCurrency
+					formatAmount
 				),
 			},
 			{
@@ -474,7 +478,7 @@ class BusinessDetails extends Component {
 				label: this.getNumberRangeString(
 					this.convertCurrency( 50000 ),
 					this.convertCurrency( 250000 ),
-					formatCurrency
+					formatAmount
 				),
 			},
 			{
@@ -482,7 +486,7 @@ class BusinessDetails extends Component {
 				label: sprintf(
 					/* translators: %s: A given revenue amount, e.g., $250000 */
 					__( 'More than %s', 'woocommerce-admin' ),
-					formatCurrency( this.convertCurrency( 250000 ) )
+					formatAmount( this.convertCurrency( 250000 ) )
 				),
 			},
 		];
@@ -693,7 +697,9 @@ BusinessDetails.contextType = CurrencyContext;
 
 export default compose(
 	withWCApiSelect( ( select ) => {
-		const { getProfileItems, getOnboardingError } = select( ONBOARDING_STORE_NAME );
+		const { getProfileItems, getOnboardingError } = select(
+			ONBOARDING_STORE_NAME
+		);
 
 		return {
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
